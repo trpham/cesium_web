@@ -52,20 +52,10 @@ class MainContent extends React.Component {
         {
           title: 'Make a new project!',
           selector: '.newProjectExpand',
-          style: {
-            footer: {
-              display: 'none',
-            },
-          },
         },
         {
           title: 'Fill out Project information',
           selector: '.newProjectForm',
-          style: {
-            footer: {
-              display: 'none',
-            },
-          },
         },
       ],
       step: 0,
@@ -87,14 +77,22 @@ class MainContent extends React.Component {
       autoStart: true,
       step: 0,
     });
-  }
 
-   handleJoyrideCallback(result) {
+  }
+ 
+  handleJoyrideCallback(result) {
+
     const { joyride } = this.props;
 
+    if (result.index === 1) {
+        // $(".newProjectExpand > div > a > span").click();
+        // OR
+        // Action.toggleExpander('#newProjectExpander');
+    }
+    
     if (result.type === 'step:before') {
       // Keep internal state in sync with joyride
-      this.setState({ step: result.index });
+      this.setState({ step: result.index });    
     }
 
     if (result.type === 'finished' && this.state.running) {
@@ -114,6 +112,7 @@ class MainContent extends React.Component {
     }
   }
 
+  
   render() {
     const config = {
       sidebar: 300,
@@ -282,7 +281,7 @@ class MainContent extends React.Component {
       transform: rotate
     };
 
-      const { joyride } = this.props;
+    const { joyride } = this.props;
     const joyrideProps = {
       autoStart: joyride.autoStart || this.state.autoStart,
       callback: this.handleJoyrideCallback,
@@ -472,6 +471,7 @@ class MainContent extends React.Component {
     );
   }
 }
+
 MainContent.propTypes = {
   selectedProject: React.PropTypes.object.isRequired,
   root: React.PropTypes.string.isRequired,
@@ -483,6 +483,7 @@ MainContent.propTypes = {
     autoStart: React.PropTypes.bool,
     callback: React.PropTypes.func,
     run: React.PropTypes.bool,
+    // expander: React.PropTypes.func,
   })
 };
 
