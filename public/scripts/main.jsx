@@ -36,7 +36,7 @@ const messageHandler = (new MessageHandler(store.dispatch)).handle;
 
 class MainContent extends React.Component {
 
-// For Walkthrough
+  // For Walkthrough
   constructor(props) {
 
     super(props);
@@ -55,7 +55,14 @@ class MainContent extends React.Component {
         },
         {
           title: 'Fill out Project information',
+          // selector: '.newProjectExpand > div > a > span',
+          // selector: '#content > div > div:nth-child(3) > div:nth-child(2) > div.newProjectExpand > div > div',
+          // selector: '#newProjectExpander',
           selector: '.newProjectForm',
+        },
+         {
+          title: 'Project tab! Wow!',
+          selector: '.tab2',
         },
       ],
       step: 0,
@@ -71,25 +78,24 @@ class MainContent extends React.Component {
 
   handleClickStart(e) {
     e.preventDefault();
+    // this.props.toggleProjectExpander();
 
     this.setState({
       running: true,
       autoStart: true,
       step: 0,
     });
-
   }
  
   handleJoyrideCallback(result) {
 
     const { joyride } = this.props;
 
-    if (result.index === 1) {
-        // $(".newProjectExpand > div > a > span").click();
-        // OR
-        // Action.toggleExpander('#newProjectExpander');
+    if (result.index == 0) {
+      console.log(result.index);
+      this.props.toggleProjectExpander();
     }
-    
+   
     if (result.type === 'step:before') {
       // Keep internal state in sync with joyride
       this.setState({ step: result.index });    
@@ -99,6 +105,10 @@ class MainContent extends React.Component {
       // Need to set our running state to false, so we can restart if we click start again.
       this.setState({ running: false });
     }
+
+    // if (result.action == 'close') {
+    //   this.setState({running: false});
+    // }
 
     if (result.type === 'error:target_not_found') {
       this.setState({
@@ -111,7 +121,6 @@ class MainContent extends React.Component {
       joyride.callback();
     }
   }
-
   
   render() {
     const config = {
@@ -318,8 +327,7 @@ class MainContent extends React.Component {
 
           </div>
         </div>
-
-        
+       
 
         <div style={style.sidebar}>
           <div style={style.topic}>Project</div>
@@ -477,13 +485,13 @@ MainContent.propTypes = {
   root: React.PropTypes.string.isRequired,
   logoSpinAngle: React.PropTypes.number.isRequired,
   spinLogo: React.PropTypes.func,
+  toggleProjectExpander: React.PropTypes.func,
 
   // For Walkthrough
   joyride: React.PropTypes.shape({
     autoStart: React.PropTypes.bool,
     callback: React.PropTypes.func,
     run: React.PropTypes.bool,
-    // expander: React.PropTypes.func,
   })
 };
 
@@ -528,6 +536,10 @@ const mapDispatchToProps = dispatch => (
     },
     spinLogo: () => {
       dispatch(Action.spinLogo());
+    },
+    toggleProjectExpander: () => {
+      dispatch(Action.toggleExpander("newProjectExpander"));
+      // dispatch(Action.spinLogo());
     }
   }
 );
