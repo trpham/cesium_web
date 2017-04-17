@@ -106,9 +106,9 @@ class MainContent extends React.Component {
       this.setState({ running: false });
     }
 
-    // if (result.action == 'close') {
-    //   this.setState({running: false});
-    // }
+    if (result.action == 'close') {
+      this.setState({running: false});
+    }
 
     if (result.type === 'error:target_not_found') {
       this.setState({
