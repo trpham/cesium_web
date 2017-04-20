@@ -46,24 +46,41 @@ class MainContent extends React.Component {
       running: false,
       steps: [
         {
-          title: 'Project tab! Wow!',
-          selector: '.tab1',
+          text: '0 First you need to create a Project!',
+          selector: '#react-tabs-0',
+          position: 'right',
         },
         {
-          title: 'Make a new project!',
+          text: '1 Click here to add new project!',
           selector: '.newProjectExpand',
+          position: 'right',
         },
         {
-          title: 'Fill out Project information',
-          // selector: '.newProjectExpand > div > a > span',
-          // selector: '#content > div > div:nth-child(3) > div:nth-child(2) > div.newProjectExpand > div > div',
-          // selector: '#newProjectExpander',
-          selector: '.newProjectForm',
+          text: '2.1 Fill out Project information',
+          selector: '.newProjectExpand > div > div',
+          position: 'right',
+        },
+        {
+          text: '2.2 Fill out Project information',
+          selector: '.newProjectExpand > div > div',
+          position: 'right',
+        },
+        {
+          text: '2.3 Fill out Project information',
+          selector: '.newProjectExpand > div > div',
+          position: 'right',
         },
          {
-          title: 'Project tab! Wow!',
-          selector: '.tab2',
+          text: '3 Data tab! Wow!',
+          selector: '#react-tabs-2',
+          position: 'right',
         },
+        {
+          text: '4 Features tab! Wow!',
+          selector: '#react-tabs-4',
+          position: 'right',
+        },
+        
       ],
       step: 0,
     };
@@ -78,7 +95,6 @@ class MainContent extends React.Component {
 
   handleClickStart(e) {
     e.preventDefault();
-    // this.props.toggleProjectExpander();
 
     this.setState({
       running: true,
@@ -91,33 +107,36 @@ class MainContent extends React.Component {
 
     const { joyride } = this.props;
 
-    if (result.index == 0) {
-      console.log(result.index);
-      this.props.toggleProjectExpander();
-    }
-   
-    if (result.type === 'step:before') {
-      // Keep internal state in sync with joyride
-      this.setState({ step: result.index });    
-    }
+    if (result.index === 1) {  
+        this.props.toggleProjectExpander();
+    } 
+    
+    else if (result.type === 'step:before') {
+        // Keep internal state in sync with joyride
+      if (result.index === 4) {  
+              document.getElementById('form > div:nth-child(1) > input').value = "hehe";
+              document.getElementById('form > div:nth-child(2) > input').value = "meweo"
+          } 
+        this.setState({ step: result.index });  
+    } 
 
-    if (result.type === 'finished' && this.state.running) {
+    else if (result.type === 'finished' && this.state.running) {
       // Need to set our running state to false, so we can restart if we click start again.
       this.setState({ running: false });
     }
 
-    if (result.action == 'close') {
+    else if (result.action == 'close') {
       this.setState({running: false});
     }
 
-    if (result.type === 'error:target_not_found') {
+    else if (result.type === 'error:target_not_found') {
       this.setState({
         step: result.action === 'back' ? result.index - 1 : result.index + 1,
         autoStart: result.action !== 'close' && result.action !== 'esc',
       });
     }
 
-    if (typeof joyride.callback === 'function') {
+    else if (typeof joyride.callback === 'function') {
       joyride.callback();
     }
   }
@@ -294,8 +313,8 @@ class MainContent extends React.Component {
     const joyrideProps = {
       autoStart: joyride.autoStart || this.state.autoStart,
       callback: this.handleJoyrideCallback,
-      debug: false,
-      disableOverlay: this.state.step === 1,
+      debug: true,
+      // disableOverlay: this.state.step === 1,
       resizeDebounce: joyride.resizeDebounce,
       run: joyride.run || this.state.running,
       scrollToFirstStep: joyride.scrollToFirstStep || true,
