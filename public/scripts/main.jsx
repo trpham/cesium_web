@@ -46,41 +46,46 @@ class MainContent extends React.Component {
       running: false,
       steps: [
         {
-          text: '0 First you need to create a Project!',
+          text: 'Firstly, create your project!',
           selector: '#react-tabs-0',
           position: 'right',
         },
         {
-          text: '1 Click here to add new project!',
+          text: 'Click here expand project info tab!',
           selector: '.newProjectExpand',
           position: 'right',
         },
-        {
-          text: '2.1 Fill out Project information',
+         {
+          text: 'Given your project information',
           selector: '.newProjectExpand > div > div',
           position: 'right',
         },
+
         {
-          text: '2.2 Fill out Project information',
-          selector: '.newProjectExpand > div > div',
-          position: 'right',
-        },
-        {
-          text: '2.3 Fill out Project information',
-          selector: '.newProjectExpand > div > div',
+          text: 'Enter a name for your project',
+          selector: 'div.newProjectExpand > div > div > div > div > form > div:nth-child(1) > input',
           position: 'right',
         },
          {
-          text: '3 Data tab! Wow!',
+          text: 'Enter a description for your project',
+          selector: 'div.newProjectExpand > div > div > div > div > form > div:nth-child(2) > input',
+          position: 'right',
+        },
+         {
+          text: 'Click here',
+          selector: 'div.newProjectExpand > div > div > div > div > form > div:nth-child(3) > button',
+          position: 'right',
+        },
+         {
+          text: 'Add Data!',
           selector: '#react-tabs-2',
           position: 'right',
         },
         {
-          text: '4 Features tab! Wow!',
+          text: 'Add Features!',
           selector: '#react-tabs-4',
           position: 'right',
         },
-        
       ],
       step: 0,
     };
@@ -106,37 +111,24 @@ class MainContent extends React.Component {
   handleJoyrideCallback(result) {
 
     const { joyride } = this.props;
-
-    if (result.index === 1) {  
-        this.props.toggleProjectExpander();
-    } 
     
-    else if (result.type === 'step:before') {
-        // Keep internal state in sync with joyride
-      if (result.index === 4) {  
-              document.getElementById('form > div:nth-child(1) > input').value = "hehe";
-              document.getElementById('form > div:nth-child(2) > input').value = "meweo"
-          } 
-        this.setState({ step: result.index });  
-    } 
+    if (result.type === 'step:before') {   
+      this.setState({ step: result.index});
+    }
 
-    else if (result.type === 'finished' && this.state.running) {
+    if (result.type === 'finished' && this.state.running) {
       // Need to set our running state to false, so we can restart if we click start again.
       this.setState({ running: false });
     }
 
-    else if (result.action == 'close') {
-      this.setState({running: false});
-    }
-
-    else if (result.type === 'error:target_not_found') {
+    if (result.type === 'error:target_not_found') {
       this.setState({
         step: result.action === 'back' ? result.index - 1 : result.index + 1,
         autoStart: result.action !== 'close' && result.action !== 'esc',
       });
     }
 
-    else if (typeof joyride.callback === 'function') {
+    if (typeof joyride.callback === 'function') {
       joyride.callback();
     }
   }
@@ -313,21 +305,21 @@ class MainContent extends React.Component {
     const joyrideProps = {
       autoStart: joyride.autoStart || this.state.autoStart,
       callback: this.handleJoyrideCallback,
+      locale: { close: 'Close', last: 'Last', next: 'Next', skip: 'Skip' },
       debug: true,
-      // disableOverlay: this.state.step === 1,
+      disableOverlay: true,
       resizeDebounce: joyride.resizeDebounce,
       run: joyride.run || this.state.running,
       scrollToFirstStep: joyride.scrollToFirstStep || true,
       stepIndex: joyride.stepIndex || this.state.step,
       steps: joyride.steps || this.state.steps,
-      type: joyride.type || 'continuous',
+      type: joyride.type || joyride.index || 'continuous',
       allowClicksThruHole: true
     };
 
     return (
       <div>
         
-       
       <Joyride
         {...joyrideProps}
         ref={c => (this.joyride = c)} />
@@ -544,7 +536,8 @@ const mapStateToProps = function (state) {
     datasets: state.datasets,
     featuresets: state.featuresets,
     selectedProject,
-    logoSpinAngle: state.misc.logoSpinAngle
+    logoSpinAngle: state.misc.logoSpinAngle,
+    projectExpanderIsOpen: state.expander.opened.newProjectExpander,
   };
 };
 
